@@ -1,0 +1,43 @@
+1	INTRODUCCION
+
+A continuación, se detalla proyecto para pyme en crecimiento, que requiere asistencia en el manejo de la información al interior de la organización.
+La empresa se dedica a la mantención de vehículos automotores (motos, autos, camiones), llevan siete años en el mercado como pyme de menor tamaño, con mucho potencial para crecimiento económico.
+Sus principales dificultades se deben a la falta de estructura organizativa a nivel de administrativo, falta de control interno de flujos de trabajo, cotizaciones, inventario, etc. Por lo que a través del proyecto se pretende dar el puntapié inicial al desarrollo de protocolos de trabajo y gestión de la información.
+
+2	Planteamiento del problema
+
+Este proyecto tiene fines académicos, pero parte de la necesidad real de establecer una conexión de la información al interior de la organización que se dedica al mantenimiento automotriz, enfocados en el área de chapa y pintura. El proyecto pretende aportar información que permita definir cargos, responsabilidades, gestión de la información y control, a través de un motor que permita a los diversos actores involucrados usar y brindar información de manera pertinente. Esta información es posible de recabar gracias a que su directa participación en el mercado y la atención personalizada ayudara a conocer de primera fuente lo que realmente buscan los clientes en el servicio.
+
+2.1	Objetivos
+
+Objetivo general:
+Mejorar la gestión de la información en la organización a través de un sistema que permita la administración eficiente.
+
+Objetivos específicos:
+•	Crear un servicio que enlace a los diversos actores involucrados en el desarrollo de la actividad económica.
+•	Elaborar una estructura de flujo de información que permita optimizar la administración de la organización.
+•	Establecer registros que permitan crear alianzas estratégicas para potenciar la organización y su desarrollo.
+
+2.2	Requisitos:
+•	Se determinarán roles y usuarios para garantizar la seguridad de la información.
+
+
+•	El sistema debe ser API Rest
+•	Se elabora una base de datos con integridad relacional
+•	La base de datos se elabora en MySQL
+
+2.3	Reglas de negocio
+Fase 1:
+•	En la fase 1, se crea un servicio que lea, cree, actualicé y borre direcciones.
+•	En la fase 1, se crea un servicio que lea, cree, actualicé y borre Colaboradores, Clientes y Vehiculos.
+•	El sistema limita Crud a través de sencilla restricción de consulta y borrado de información, determinada por el rol de administrador quien posee todas las facultades.
+
+Fase 2:
+•	El sistema debe recoger la información brindada por los clientes. Esta fase deberá desarrollarse de manera independiente dado que sus alcances no son posibles de concluir antes del término de curso de backend.
+Fase 3:
+•	La información debe ser administrada a través del sistema, por el usuario administrador.
+•	El administrador podrá introducir todos los datos relacionados con la reparación de un vehículo nuevo o que ya estuviera registrado.
+•	El administrador podrá modificar, si así lo desea, cualquier dato relacionado con la reparación de un vehículo o con los datos del propio vehículo que previamente hayan sido insertados en el sistema.
+•	El administrador y los colaboradores podrán ver todo el historial de reparaciones realizadas en el taller. Obtendrán datos, modificaran los datos y eliminaran la reparación o todo el historial de un vehículo.
+•	El administrador podrá gestionar los servicios de mano de obra. Podrá añadir, modificar o eliminar el que desee.
+•	Esta fase deberá concluirse con posterioridad al curso de backend
