@@ -1,5 +1,6 @@
 package com.talleradiv2.TallerProyectoAda.repository;
 
+import com.talleradiv2.TallerProyectoAda.Model.Direccion;
 import com.talleradiv2.TallerProyectoAda.Model.Rol;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -17,7 +18,6 @@ public interface RolRepository extends CrudRepository<Rol,Integer> {
 
    /* @Query(value = "select id_proveedor from user_role where id_user= :userId",nativeQuery = true)
     Collection<Proveedor> getProveedorByRol(@Param("id_proveedor")String userId);
+*/
 
-    @Query(value = "select id_direccion from id_user= :userId",nativeQuery = true)
-    Collection<Direccion> getDireccionByUserId(@Param("id_direccion")int id_direccion);*/
 }

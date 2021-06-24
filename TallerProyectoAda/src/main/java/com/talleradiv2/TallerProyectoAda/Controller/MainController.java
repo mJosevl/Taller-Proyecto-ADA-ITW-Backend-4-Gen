@@ -5,7 +5,9 @@ import com.talleradiv2.TallerProyectoAda.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.ls.LSOutput;
 
 import java.util.Collection;
 
@@ -124,7 +126,6 @@ public class MainController {
     }
 
 
-
     @GetMapping(path = "user/{userId}/direccion/all")
     public @ResponseBody
     ResponseEntity<Response> getAllDireccion(@PathVariable("userId") String userId) {
@@ -217,17 +218,35 @@ public class MainController {
         return ResponseEntity.ok(response);
     }
 
-
-    @GetMapping(path = "user/{userId}/vehiculo/{patente}")
+    @GetMapping(path = "user/{userId}/vehiculo/all")
     public @ResponseBody
-    ResponseEntity<Response> getVehiculoByPatente(@PathVariable("userId") String userId,
-                                  @PathVariable("patente") String patente) {
+    ResponseEntity<Response> getVehiculoAllbyId(@PathVariable("userId") String userId) {
 
         Response response = new Response();
         Collection<Rol> roles = rolRepository.getRolByUser(userId);
 
         for (Rol rol : roles) {
-            if (rol.getId_rol() == 1 || rol.getId_rol() == 2 ) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(vehiculoRepository.findAll());
+                response.setMensaje("Consulta realizada con exito");
+                return ResponseEntity.ok(response);
+            }
+
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(path = "user/{userId}/vehiculo/{patente}")
+    public @ResponseBody
+    ResponseEntity<Response> getVehiculoByPatente(@PathVariable("userId") String userId,
+                                                  @PathVariable("patente") String patente) {
+
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
+
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
                 response.setObject(vehiculoRepository.getVehiculoBypatente(patente));
                 response.setMensaje("Consulta realizada con exito");
                 return ResponseEntity.ok(response);
@@ -239,113 +258,165 @@ public class MainController {
     }
 
 
-
-
 /////////////////////////////////////////////CREATE////////////////////////////////////////////////////////////
 
-    @PostMapping(path = "direccion/create", consumes = "application/json", produces = "application/json")
+    @PostMapping(path = "direccion/create")
     public Direccion createAdress(@RequestBody Direccion nDireccion) {
         return direccionRepository.save(nDireccion);
     }
 
+    @PostMapping(path = "user/{userId}/direccion/create")
+    public @ResponseBody
+    ResponseEntity<Response> createDireccion(@PathVariable("userId") String userId,
+                                             @RequestBody Direccion newDireccion) {
 
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
 
-    @PostMapping(path = "user/{id_user}/colaborador/create",consumes = "application/json",produces = "application/json")
-    public Colaborador createColaborador(@RequestBody Colaborador newColaborador,
-                                         @Param("UserId") String userId) {
-        Collection<Rol> rolCollection = rolRepository.getRolByUser(userId);
-        for (Rol rol : rolCollection) {
-            if (rol.getId_rol() == 1) {
-                colaboradorRepository.save(newColaborador);
-               
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(direccionRepository.save(newDireccion));
+                response.setMensaje("Direccion  creada con exito");
+                return ResponseEntity.ok(response);
             }
-
-
-        }return newColaborador;
-
-    }
-    @PostMapping(path = "user/{id_user}/cliente/create",consumes = "application/json",produces = "application/json")
-    public Cliente createCliente(@RequestBody Cliente newCliente,
-                                         @Param("UserId") String userId) {
-        Collection<Rol> rolCollection = rolRepository.getRolByUser(userId);
-        for (Rol rol : rolCollection) {
-            if (rol.getId_rol() == 1 || rol.getId_rol() ==2 ) {
-                clienteRepository.save(newCliente);
-
-            }
-
-
-        }return newCliente;
-
-    }
-    @PostMapping(path = "user/{id_user}/vehiculos/create",consumes = "application/json",produces = "application/json")
-    public Vehiculo createVehiculo(@RequestBody Vehiculo newVehiculo,
-                                         @Param("UserId") String userId) {
-        Collection<Rol> rolCollection = rolRepository.getRolByUser(userId);
-        for (Rol rol : rolCollection) {
-            if (rol.getId_rol() == 1) {
-                vehiculoRepository.save(newVehiculo);
-
-            }
-
-
-        }return newVehiculo;
-
-    }
-
-
-
-    /////////////////////////////////////////////UPDATE////////////////////////////////////////////////////////////
-    @PutMapping(path = "direccion/update")
-    public Direccion updateDireccion(@RequestBody Direccion updateDireccion){
-
-        return direccionRepository.save(updateDireccion);}
-
-  @PutMapping(path = "user/{userId}/direccion/all")
-
-    public Direccion updateDireccion(@PathVariable("id_user") String userId,
-                                     @PathVariable ("id_direccion") int id_direccion) {
-
-       Collection<Rol>rols=rolRepository.getRolByUser(userId);
-       for (Rol roles: rols){
-           if (roles.getId_rol() == 1 || roles.getId_rol() ==2) {
-            direccionRepository.findById(id_direccion);
 
         }
-       }return null ;
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
     }
 
+     @PostMapping(path = "user/{userId}/cliente/create")
+    public @ResponseBody
+    ResponseEntity<Response> createCliente(@PathVariable("userId") String userId,
+                                             @RequestBody Cliente newCliente) {
 
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
 
-
-    @PutMapping(path = "cliente/update")
-    public Cliente updateCliente(@RequestBody Cliente updateCliente,
-                                 @PathVariable ("id_cliente") String userId){
-        Collection<Rol>rols=rolRepository.getRolByUser(userId);
-        for (Rol roles: rols){
-            if (roles.getId_rol() == 1 || roles.getId_rol() ==2) {
-         clienteRepository.save(updateCliente);
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(clienteRepository.save(newCliente));
+                response.setMensaje("Se ha creado el registro del cliente con exito");
+                return ResponseEntity.ok(response);
             }
-        }return null;
+
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
+    }
+    @PostMapping(path = "user/{userId}/vehiculo/create")
+    public @ResponseBody
+    ResponseEntity<Response> createVehiculo(@PathVariable("userId") String userId,
+                                              @RequestBody Vehiculo newVehiculo) {
+
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
+
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(vehiculoRepository.save(newVehiculo));
+                response.setMensaje("Nuevo vehículo registrado");
+                return ResponseEntity.ok(response);
+            }
+
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping(path = "colaborador/update")
-    public Colaborador updateColaborador(@RequestBody Colaborador updateColaborador){
+    @PostMapping(path = "user/{userId}/cotizacion/create")
+    public @ResponseBody
+    ResponseEntity<Response> createCotizacion(@PathVariable("userId") String userId,
+                                             @RequestBody Cotizacion newCotizacion) {
 
-        return colaboradorRepository.save(updateColaborador);}
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
 
-    @PutMapping(path = "proveedor/update")
-    public Proveedor updateProveedor(@RequestBody Proveedor updateProveedor){
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(cotizacionRepository.save(newCotizacion));
+                response.setMensaje("Cotizacion  valida por 15 días");
+                return ResponseEntity.ok(response);
+            }
 
-        return proveedorRepository.save(updateProveedor);}
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
+    }
+    /////////////////////////////////////////////UPDATE////////////////////////////////////////////////////////////
+    @PutMapping(path = "direccion/update")
+    public Direccion updateDireccion(@RequestBody Direccion updateDireccion) {
+
+        return direccionRepository.save(updateDireccion);
+    }
+
+    @PutMapping(path = "user/{userId}/direccion/update")
+    ResponseEntity<Response> updateDireccion(@PathVariable("userId") String userId,
+                                             @RequestBody Direccion upDireccion) {
+
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
+
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(direccionRepository.save(upDireccion));
+                response.setMensaje("Direccion  actualizada con exito");
+                return ResponseEntity.ok(response);
+            }
+
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PutMapping(path = "user/{userId}/cliente/update")
+    ResponseEntity<Response> updateCliente(@PathVariable("userId") String userId,
+                                             @RequestBody Cliente upCliente) {
+
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
+
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(clienteRepository.save(upCliente));
+                response.setMensaje("Cliente  actualizado con exito");
+                return ResponseEntity.ok(response);
+            }
+
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
+    }
+
+
+    @PutMapping(path = "user/{id_user}/proveedor/update")
+    ResponseEntity<Response> updateProveedor(@PathVariable("userId") String userId,
+                                             @RequestBody Proveedor upProveedor) {
+
+        Response response = new Response();
+        Collection<Rol> roles = rolRepository.getRolByUser(userId);
+
+        for (Rol rol : roles) {
+            if (rol.getId_rol() == 1 || rol.getId_rol() == 2) {
+                response.setObject(proveedorRepository.save(upProveedor));
+                response.setMensaje("Proveedor  actualizado con exito");
+                return ResponseEntity.ok(response);
+            }
+
+        }
+        response.setMensaje("Acceso restringido");
+        return ResponseEntity.ok(response);
+    }
+
 
 
     /////////////////////////////////////////////DELETE////////////////////////////////////////////////////////////
 
     @DeleteMapping(path = "user/{id_user}/direccion/delete/{id_direccion}")
     public @ResponseBody
-    String deleteDireccionById(@PathVariable("id_user")String id_user,
-                               @PathVariable ("id_direccion") int id_direccion) {
+    String deleteDireccionById(@PathVariable("id_user") String id_user,
+                               @PathVariable("id_direccion") int id_direccion) {
 
         Collection<Rol> rolByUser = rolRepository.getRolByUser(id_user);
         for (Rol rol : rolByUser) {
@@ -360,8 +431,8 @@ public class MainController {
 
     @DeleteMapping(path = "user/{id_user}/cliente/delete/{id_direccion}")
     public @ResponseBody
-    String deleteClienteById(@PathVariable("id_user")String id_user,
-                             @PathVariable ("id_cliente") int id_cliente) {
+    String deleteClienteById(@PathVariable("id_user") String id_user,
+                             @PathVariable("id_cliente") int id_cliente) {
 
         Collection<Rol> rolByUser = rolRepository.getRolByUser(id_user);
         for (Rol rol : rolByUser) {
@@ -377,8 +448,8 @@ public class MainController {
 
     @DeleteMapping(path = "user/{id_user}/colaborador/delete/{id_colaborador}")
     public @ResponseBody
-    String deleteColaboradorById(@PathVariable("id_user")String id_user,
-                                 @PathVariable ("id_colaborador") int id_colaborador) {
+    String deleteColaboradorById(@PathVariable("id_user") String id_user,
+                                 @PathVariable("id_colaborador") int id_colaborador) {
 
         Collection<Rol> rolByUser = rolRepository.getRolByUser(id_user);
         for (Rol rol : rolByUser) {
@@ -393,8 +464,8 @@ public class MainController {
 
     @DeleteMapping(path = "user/{id_user}/proveedor/delete/{id_proveedor}")
     public @ResponseBody
-    String deleteProveedorById(@PathVariable("id_user")String id_user,
-                               @PathVariable ("id_proveedor") int id_proveedor) {
+    String deleteProveedorById(@PathVariable("id_user") String id_user,
+                               @PathVariable("id_proveedor") int id_proveedor) {
 
         Collection<Rol> rolByUser = rolRepository.getRolByUser(id_user);
         for (Rol rol : rolByUser) {
@@ -406,6 +477,23 @@ public class MainController {
 
         return "Usuario no autorizado para borrar el registro de proveedores";
     }
+
+    @DeleteMapping(path = "user/{id_user}/cotizacion/delete/{id_cotizacion}")
+    public @ResponseBody
+    String deleteCotizacionById(@PathVariable("id_user") String id_user,
+                               @PathVariable("id_cotizacion") int id_cotizacion) {
+
+        Collection<Rol> rolByUser = rolRepository.getRolByUser(id_user);
+        for (Rol rol : rolByUser) {
+            if (rol.getName().equals("administrador")) {
+                cotizacionRepository.deleteById(id_cotizacion);
+                return "El registro fue eliminado, id :" + id_cotizacion;
+            }
+        }
+
+        return "Usuario no autorizado para borrar cotizaciones";
+    }
+
 
 }
 
